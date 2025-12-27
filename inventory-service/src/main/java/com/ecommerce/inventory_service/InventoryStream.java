@@ -7,6 +7,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.TimeWindows;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,24 @@ public class InventoryStream {
 		JsonSerde<InventoryEvent> inventorySerde = new JsonSerde<>(InventoryEvent.class);
 		
 		KStream<String,InventoryEvent> stream = builder.stream("inventory-events", Consumed.with(Serdes.String(), inventorySerde));
+		
+		
+		// 1. Simple processing: Count messages per product
+		/*
+		 * KTable<String, Long> productCount = stream .peek((key, value) -> {
+		 * log.info("Stream received - Key: {}, Value: {}", key, value);
+		 * System.out.println("📊 STREAM PROCESSING: " + value); }) .groupBy((key,
+		 * value) -> { // Extract productId from JSON (simple parsing) if
+		 * (value.contains("\"productId\"")) { int start =
+		 * value.indexOf("\"productId\":\"") + 13; int end = value.indexOf("\"", start);
+		 * return value.substring(start, end); } return "unknown"; })
+		 * .count(Materialized.as("product-count-store"));
+		 * 
+		 * // Log the counts productCount.toStream() .foreach((productId, count) -> {
+		 * log.info("📊 Product {} has been updated {} times", productId, count);
+		 * System.out.println("📊 STREAM OUTPUT: Product " + productId + " count: " +
+		 * count); });
+		 */
 		
 		// Real-time aggregation: total reserved quantity per product
         KTable<String, Long> totalReserved = stream

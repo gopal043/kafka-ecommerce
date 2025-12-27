@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 public class OrderController {
 
 	private final OrderService orderService;
+	private final CircuitBreakerService CircuitBreakerService;
 
 	
 	  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.TEXT_PLAIN_VALUE}, 
@@ -44,6 +45,11 @@ public class OrderController {
 	  public ResponseEntity<Void>
 	  cancelOrder(@PathVariable String orderId) {
 	  orderService.cancelOrder(orderId); return ResponseEntity.ok().build(); }
+	  
+	  @GetMapping("/test-circuit-breaker/{orderId}")
+	  public String testCircuitBreaker(@PathVariable String orderId) {
+	      return CircuitBreakerService.processOrder(orderId);
+	  }
 	  
 	  @GetMapping("/health") 
 	  public ResponseEntity<String> health() { return
