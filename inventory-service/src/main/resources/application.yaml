@@ -1,0 +1,43 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: inventory-service
+  
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/inventorydb
+      auto-index-creation: true
+  
+  kafka:
+    bootstrap-servers: localhost:29092
+    streams:
+      application-id: inventory-streams-app
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
+        commit.interval.ms: 1000
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        #spring.json.type.mapping: inventoryEvent:com.ecommerce.inventory_service.InventoryEvent
+        spring.json.use.type.headers: false
+    consumer:
+      group-id: inventory-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+# For exactly-once semantics
+    properties:
+      enable.idempotence: true
+      acks: all
+      retries: 10
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+    com.ecommerce.inventory_serce: DEBUG

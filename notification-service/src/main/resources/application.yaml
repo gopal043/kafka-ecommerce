@@ -1,0 +1,31 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: notification-service
+  
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.add.type.headers: false
+        spring.json.value.default.type: com.ecommerce.notification_service.OrderEvent
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        max.poll.records: 10
+
+      # Add listener configuration
+      listener:
+        ack-mode: manual_immediate
+        missing-topics-fatal: false
+
+logging:
+  level:
+    com.ecommerce.notification: INFO
