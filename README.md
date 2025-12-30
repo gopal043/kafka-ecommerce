@@ -162,6 +162,7 @@ cd ../notification-service && java -jar notification-service/target/*.jar
 cd ../auth-service && java -jar auth-service/target/*.jar
 
 # 6. Run Nginx container
+cd /ngnix
 docker run -d --name nginx-gateway -p 80:80 --network kafka-network <nginx-image:name >
 
 # 📚 API Documentation
