@@ -163,7 +163,8 @@ cd ../auth-service && java -jar auth-service/target/*.jar
 
 # 6. Run Nginx container
 cd /ngnix
-docker run -d --name nginx-gateway -p 80:80 --network kafka-network <nginx-image:name >
+docker build -t ecommerce-nginx:latest .
+docker run -d --name nginx-gateway -p 80:80 --network kafka-network ecommerce-nginx:latest
 
 # 📚 API Documentation
 Base URLs
